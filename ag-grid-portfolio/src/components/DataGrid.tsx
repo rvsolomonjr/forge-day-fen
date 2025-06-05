@@ -11,6 +11,7 @@ import {
 } from 'ag-grid-community';
 import { DataGridProps, Ticker } from '../utils/types';
 import { TickerCellRenderer } from './TickerCellRenderer';
+import { PriceTrendCellRenderer } from './PriceTrendCellRenderer';
 
 // AG Grid Styles
 import 'ag-grid-community/styles/ag-grid.css';
@@ -23,6 +24,7 @@ const DataGrid: React.FC<DataGridProps> = ({ data = [], setSelectedRow }) => {
     flex: 1,
     minWidth: 100,
     resizable: true,
+    sortable: true,
   };
 
   // Currency Value Formatter
@@ -44,16 +46,28 @@ const DataGrid: React.FC<DataGridProps> = ({ data = [], setSelectedRow }) => {
   // Profit And Loss Cell Style
   const getProfitAndLossCellStyle = (params: CellClassParams) => {
     if (params.value < 0) {
-      return { color: '#dc3545', fontWeight: 'bold' };
+      return { 
+        color: '#dc3545', 
+        fontWeight: 'bold',
+        backgroundColor: '#fff5f5'
+      };
     } else if (params.value > 0) {
-      return { color: '#28a745', fontWeight: 'bold' };
+      return { 
+        color: '#28a745', 
+        fontWeight: 'bold',
+        backgroundColor: '#f0fff4'
+      };
     }
-    return { color: '#333', fontWeight: 'normal' };
+    return { 
+      color: '#333', 
+      fontWeight: 'normal',
+      backgroundColor: 'transparent'
+    };
   };
 
-  // Row Selection Options
-  // Row Selection Option
+  // Row Selection Options (Community version uses string)
   const rowSelection = 'single';
+
   // On First Data Rendered Event
   const onFirstDataRendered = (params: FirstDataRenderedEvent) => {
     // Auto-size columns to fit content
@@ -73,52 +87,45 @@ const DataGrid: React.FC<DataGridProps> = ({ data = [], setSelectedRow }) => {
     return [
       {
         field: 'ticker',
-        headerName: 'Ticker',
+        headerName: 'Company',
         cellRenderer: TickerCellRenderer,
-        flex: 2,
-        minWidth: 200,
+        flex: 2.5,
+        minWidth: 220,
+        pinned: 'left',
       },
       {
         field: 'shares',
         headerName: 'Shares',
         type: 'numericColumn',
+        flex: 1,
+        minWidth: 100,
+        valueFormatter: (params) => params.value.toLocaleString(),
       },
       {
         field: 'averagePrice',
         headerName: 'Avg Price',
         valueFormatter: currencyFormatter,
         type: 'numericColumn',
+        flex: 1.2,
+        minWidth: 120,
       },
       {
         field: 'currentPrice',
         headerName: 'Current Price',
         valueFormatter: currencyFormatter,
         type: 'numericColumn',
+        flex: 1.2,
+        minWidth: 120,
       },
       {
         field: 'simplePriceHistory',
-        headerName: 'Trend (30d)',
-        cellRenderer: 'agSparklineCellRenderer',
-        cellRendererParams: {
-          sparklineOptions: {
-            type: 'line',
-            line: {
-              stroke: '#007acc',
-              strokeWidth: 2,
-            },
-            padding: {
-              top: 5,
-              bottom: 5,
-            },
-            axis: {
-              type: 'number',
-              stroke: 'transparent',
-            },
-          },
-        },
+        headerName: '12-Month Trend',
+        cellRenderer: PriceTrendCellRenderer,
         sortable: false,
         filter: false,
-        flex: 1.5,
+        flex: 2,
+        minWidth: 200,
+        headerTooltip: 'Shows 12-month price trend and percentage change',
       },
       {
         field: 'PnL',
@@ -127,6 +134,9 @@ const DataGrid: React.FC<DataGridProps> = ({ data = [], setSelectedRow }) => {
         valueFormatter: currencyFormatter,
         cellStyle: getProfitAndLossCellStyle,
         type: 'numericColumn',
+        flex: 1.3,
+        minWidth: 130,
+        headerTooltip: 'Total profit/loss based on average price vs current price',
       },
     ];
   }, []);
@@ -148,7 +158,11 @@ const DataGrid: React.FC<DataGridProps> = ({ data = [], setSelectedRow }) => {
         onFirstDataRendered={onFirstDataRendered}
         getRowId={getRowId}
         animateRows={true}
-        enableRangeSelection={true}
+        suppressRowClickSelection={false}
+        rowHeight={60}
+        headerHeight={45}
+        suppressCellFocus={true}
+        enableBrowserTooltips={true}
       />
     </div>
   );

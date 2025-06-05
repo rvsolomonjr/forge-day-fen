@@ -3,7 +3,6 @@ import DataGrid from './components/DataGrid';
 import FinancialChart from './components/FinancialChart';
 import { Ticker } from './utils/types';
 import { generateMockData } from './utils/mockData';
-import 'ag-grid-enterprise';
 
 const App: React.FC = () => {
   const [selectedRow, setSelectedRow] = useState<Ticker | null>(null);
@@ -55,18 +54,20 @@ const App: React.FC = () => {
         </section>
 
         <section className="chart-section">
-          <h2>Price Chart</h2>
+          <h2>Price Performance</h2>
           <FinancialChart selectedRow={selectedRow} />
         </section>
       </main>
 
       <footer className="app-footer">
-        <h3>Instructions</h3>
+        <h3>How to Use This Dashboard</h3>
         <ul>
-          <li>Click on any row in the grid to see the detailed price chart</li>
-          <li>Use the column filters to search and filter your holdings</li>
-          <li>The sparkline shows the 30-day price trend for each stock</li>
-          <li>Green/red colors indicate profit/loss for each position</li>
+          <li>Click on any row in the grid to see the detailed yearly price chart</li>
+          <li>Use the time range selector (3M, 6M, 1Y) to adjust the chart view period</li>
+          <li>Use column filters and sorting to analyze your portfolio holdings</li>
+          <li>The trend column shows 12-month performance with percentage change</li>
+          <li>Green/red colors indicate profit/loss and upward/downward trends</li>
+          <li>Hover over chart points to see specific date and price information</li>
         </ul>
       </footer>
     </div>
