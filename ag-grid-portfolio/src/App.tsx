@@ -3,6 +3,7 @@ import DataGrid from './components/DataGrid';
 import FinancialChart from './components/FinancialChart';
 import { Ticker } from './utils/types';
 import { generateMockData } from './utils/mockData';
+import 'ag-grid-enterprise';
 
 const App: React.FC = () => {
   const [selectedRow, setSelectedRow] = useState<Ticker | null>(null);
